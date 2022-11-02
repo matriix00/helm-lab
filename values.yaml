@@ -1,0 +1,57 @@
+replicaCount: 1
+
+servicename: frontend
+servicelabels:
+    app: python-app
+    tier: frontend 
+servicePort: 80
+servicetPort: 80
+servicetype: LoadBalancer
+
+#############################
+configname: python-config-map
+
+data:
+  env: "DEV"
+  host: "localhost"
+  port: "80"
+  redishost: "backend-service"
+  redisport: "6379"
+  redisdb: "0"
+#############################
+redisname: redis
+
+redislabel:
+    type: redis
+redis:
+  image: gcr.io/omarmagdy/redis:latest
+  container: redis
+  ports:
+    containerport: 6379 
+
+redisService:
+  name: backend-service
+  ports:
+    protocol: TCP
+    port: 6379
+    targetPort: 6379
+#############################
+pythonName: frontend
+
+python: 
+  image: gcr.io/omarmagdy/python-app
+  container: python-application
+  port: 80
+  env:
+    environment:
+      refkey: ENVIRONMENT
+    host:
+      refkey: HOST
+    port:
+      refkey: PORT
+    redishost:
+      refkey: REDIS_HOST
+    redisport:
+      refkey: REDIS_PORT
+    redisdb:
+      refkey: REDIS_DB

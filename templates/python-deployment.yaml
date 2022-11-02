@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.pythonName}}
+  labels:
+    app: {{.Values.servicelabels.app}}
+    tier: {{.Values.servicelabels.tier}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+       app: {{.Values.servicelabels.app}}
+       tier: {{.Values.servicelabels.tier}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.servicelabels.app}}
+        tier: {{.Values.servicelabels.tier}}
+    spec:
+      containers:
+      - name:  {{.Values.python.container}}
+        image: {{.Values.python.image}}
+        env:
+        - name: {{.Values.python.env.environment.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}        
+              key: {{.Values.python.env.environment.refkey}}
+        - name: {{.Values.python.env.host.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}        
+              key: {{.Values.python.env.host.refkey}}
+        - name: {{.Values.python.env.redishost.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}        
+              key: {{.Values.python.env.port.refkey}}
+        - name: {{.Values.python.env.redishost.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}        
+              key: {{.Values.python.env.redishost.refkey}}
+        - name: {{.Values.python.env.redisport.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}       
+              key: {{.Values.python.env.redisport.refkey}}
+        - name: {{.Values.python.env.redisdb.refkey}}
+          valueFrom:  
+            configMapKeyRef:
+              name: {{.Values.configname}}       
+              key: {{.Values.python.env.redisdb.refkey}}
+        ports:
+        - containerPort: {{.Values.python.port}}
